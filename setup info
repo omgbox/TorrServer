@@ -1,0 +1,50 @@
+We download the necessary TorrServer, create the / opt / torrserver / folder and move the TorrServer there with the commands:
+  wget https://github.com/YouROK/TorrServer/releases/download/1.1.69/TorrServer-linux-amd64 
+  sudo mkdir / opt / torrserver 
+  sudo mv TorrServer-linux-amd64 / opt / torrserver 
+
+We give the right to execute the file with the command:
+  sudo chmod + x / opt / torrserver / TorrServer-linux-amd64 
+
+Install the systemd container with the command:
+  sudo apt install systemd-container 
+
+Create unit in the directory with the command:
+  sudo nano /etc/systemd/system/torrserver.service 
+
+with the following contents:
+  [Unit] 
+  Description = torrserver 
+  After = network.target 
+
+  [Install] 
+  WantedBy = multi-user.target 
+
+  [Service] 
+  Type = simple 
+  NonBlocking = true 
+  WorkingDirectory = / opt / torrserver 
+  ExecStart = / opt / torrserver / TorrServer-linux-amd64 --p 8090 
+  Restart = on-failure 
+  RestartSec = 5s 
+
+We reboot the systemd daemon and enable TorrServer with the following commands:
+  sudo systemctl daemon-reload 
+  sudo systemctl start torrserver 
+  sudo systemctl enable torrserver 
+
+You can check the status of TorrServer using the command:
+  sudo systemctl status torrserver 
+
+If TorrServer does not start, reboot with the command:
+  sudo reboot 
+
+TorrServer should be available at:
+http: // localhost: 8090
+Settings:
+http: // localhost: 8090 / settings
+Work cache:
+http: // localhost: 8090 / cache
+Statistics:
+http: // localhost: 8090 / stat
+(If installing on a remote machine, change localhost to the IP address of the machine)
